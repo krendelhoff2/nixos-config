@@ -17,8 +17,14 @@
 
 (map! :leader :desc "Turn off ex highlighting" "sc" #'evil-ex-nohighlight)
 
+(setq c-basic-offset 4
+      c-tab-always-indent t
+      c-default-style "bsd")
+
+(define-key c-mode-base-map (kbd "<tab>") (lambda () (interactive) (insert-char ?\t)))
+
 (add-hook! (c-mode)
- (setq c-basic-offset 4)
- (indent-tabs-mode)
- (setq c-tab-always-indent t)
- (define-key c-mode-base-map (kbd "<tab>") (lambda () (interactive) (insert-char ?\t))))
+  (indent-tabs-mode))
+
+(add-hook! (rust-mode)
+ (setq rust-indent-offset 2))
