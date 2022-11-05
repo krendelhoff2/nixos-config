@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, overlays, ... }:
 {
   home.stateVersion = "22.11";
   programs.doom-emacs = rec {
@@ -49,7 +49,7 @@
       (load! "${ftheader}/comments.el")
       (load! "${ftheader}/header.el")
     '';
-    emacsPackagesOverlay = import ../overlays/emacs-packages.nix pkgs;
+    emacsPackagesOverlay = overlays.emacs-packages;
   };
   services.emacs.enable = true;
 }

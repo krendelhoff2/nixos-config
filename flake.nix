@@ -38,6 +38,7 @@
       ];
       config.allowUnfree = true;
     };
+    overlays = import ./overlays.nix { inherit pkgs; };
     system = "x86_64-linux";
   in
   {
@@ -55,7 +56,7 @@
                  nix-doom-emacs.hmModule
                  (import ./home/home.nix)
                ];
-               extraSpecialArgs = {};
+               extraSpecialArgs = { inherit overlays; };
              };
            }
          ];
@@ -67,10 +68,13 @@
          modules = [
            ./vps/configuration.nix
            home-manager.nixosModules.home-manager {
-             home-manager.users.savely = nixpkgs.lib.mkMerge [
-               nix-doom-emacs.hmModule
-               (import ./vps/home.nix)
-             ];
+             home-manager = {
+               extraSpecialArgs = { inherit overlays; };
+               users.savely = nixpkgs.lib.mkMerge [
+                 nix-doom-emacs.hmModule
+                 (import ./vps/home.nix)
+               ];
+             };
            }
          ];
        };

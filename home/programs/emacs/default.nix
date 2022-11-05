@@ -1,4 +1,4 @@
-{ pkgs, stdenv, lib, ... }:
+{ pkgs, stdenv, lib, overlays, ... }:
 {
   programs.doom-emacs = rec {
     enable = true;
@@ -48,7 +48,7 @@
       (load! "${ftheader}/comments.el")
       (load! "${ftheader}/header.el")
     '';
-    emacsPackagesOverlay = import ../../../overlays/emacs-packages.nix pkgs;
+    emacsPackagesOverlay = overlays.emacs-packages;
   };
   services.emacs.enable = true;
 }
