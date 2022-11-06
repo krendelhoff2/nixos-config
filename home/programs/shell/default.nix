@@ -1,11 +1,10 @@
 { pkgs, lib, ...}:
 let
   commonInit = ''
-    export PATH="$HOME/.cargo/bin:$HOME/.emacs.d/bin:$HOME/.config/guix/current/bin:$PATH"
+    export PATH="$HOME/.cargo/bin:$HOME/.config/guix/current/bin:$PATH"
     export GUIX_PROFILE="$HOME/.guix-profile"
-    alias rebuild="deploy $HOME/.dotfiles#savely-machine"
     export EDITOR='emacsclient -t -a ""'
-    alias vim=$EDITOR
+    alias vim="$EDITOR"
   '';
 in
 {
@@ -28,6 +27,11 @@ in
         set fish_cursor_insert line
         set fish_cursor_replace_one underscore
       end
+      function rebuild
+        set target $argv[1]
+        set -q target || set target savely-machine
+        deploy "$HOME/.dotfiles#$target"
+      end
       colorscript -r
     '';
     plugins = [];
@@ -39,6 +43,9 @@ in
     enableVteIntegration = true;
     initExtra = commonInit + ''
       source "$GUIX_PROFILE/etc/profile"
+      rebuild () {
+        deploy "$HOME/.dotfiles#$1"
+      }
     '';
   };
   programs.zsh = {
@@ -64,6 +71,9 @@ in
       colorscript -r
       bindkey -e
       bindkey '\e' vi-cmd-mode
+      rebuild () {
+        deploy "$HOME/.dotfiles#$1"
+      }
     '';
     prezto = {
       enable = true;
