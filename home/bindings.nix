@@ -1,16 +1,16 @@
 pkgs: with pkgs;
 rec {
   layout-switch = writeShellScriptBin "layout-switch"
-    (builtins.readFile ./layout-switch.sh);
+    (builtins.readFile ./scripts/layout-switch.sh);
 
   powermenu = writeShellScriptBin "powermenu"
-    (builtins.readFile ./powermenu.sh);
+    (builtins.readFile ./scripts/powermenu.sh);
 
   launch-bar = writeShellScriptBin "launch-bar"
-    (builtins.readFile ./launch-bar.sh);
+    (builtins.readFile ./scripts/launch-bar.sh);
 
   toggle-sidebar = writeShellScriptBin "toggle-sidebar"
-    (builtins.readFile ./toggle-sidebar.sh);
+    (builtins.readFile ./scripts/toggle-sidebar.sh);
 
   pswd = [
     xkcdpass

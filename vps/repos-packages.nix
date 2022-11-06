@@ -7,8 +7,8 @@ in {
     repos-backup = stdenv.mkDerivation rec {
         name = "repos-backup";
         builder = "${sh}/bin/sh";
-        args = [ ./shell-script-builder.sh  ];
-        src = ./repos-backup.sh;
+        args = [ ./scripts/shell-script-builder.sh  ];
+        src = ./scripts/repos-backup.sh;
         buildInputs = [ coreutils ];
         system = builtins.currentSystem;
     };
@@ -16,8 +16,8 @@ in {
     repos-create = stdenv.mkDerivation rec {
         name = "repos-create";
         builder = "${sh}/bin/sh";
-        args = [ ./shell-script-builder.sh  ];
-        src = ./repos-create.sh;
+        args = [ ./scripts/shell-script-builder.sh  ];
+        src = ./scripts/repos-create.sh;
         buildInputs = [ coreutils ];
         system = builtins.currentSystem;
     }; 
@@ -25,8 +25,8 @@ in {
     repos-delete = stdenv.mkDerivation rec {
         name = "repos-delete";
         builder = "${sh}/bin/sh";
-        args = [ ./shell-script-builder.sh  ];
-        src = ./repos-delete.sh;
+        args = [ ./scripts/shell-script-builder.sh  ];
+        src = ./scripts/repos-delete.sh;
         buildInputs = [ coreutils ];
         system = builtins.currentSystem;
     }; 
@@ -34,7 +34,7 @@ in {
     repos-list = stdenv.mkDerivation rec {
         name = "repos-list";
         builder = "${sh}/bin/sh";
-        args = [ ./shell-string-script-builder.sh  ];
+        args = [ ./scripts/shell-string-script-builder.sh  ];
         src = ''
                 #!/bin/sh
                 . repos-setenvvars
@@ -47,7 +47,7 @@ in {
     repos-setenvvars = stdenv.mkDerivation rec {
         name = "repos-setenvvars";
         builder = "${sh}/bin/sh";
-        args = [ ./shell-string-script-builder.sh  ];
+        args = [ ./scripts/shell-string-script-builder.sh  ];
         src = ''
                 #!/bin/sh
                 # set environment variables for use in repos scripts
