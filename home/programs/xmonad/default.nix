@@ -6,7 +6,7 @@
     # let being very generic in environments
     initExtra = ''
       autorandr -l savely-profile
-      nitrogen --set-zoom-fill "$HOME/.dotfiles/wallpaper2.jpg"
+      nitrogen --set-zoom-fill "$HOME/.dotfiles/pics/wallpaper2.jpg"
     '';
 
     windowManager.xmonad = {
