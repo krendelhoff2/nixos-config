@@ -1,17 +1,9 @@
-{ pkgs, stdenv, lib, overlays, ... }:
+{ pkgs, stdenv, lib, overlays, doomdir, ... }:
 {
   programs.doom-emacs = rec {
     enable = true;
     emacsPackage = pkgs.emacsNativeComp;
-    doomPrivateDir = pkgs.stdenv.mkDerivation {
-      name = "savely-emacs-config";
-      src = lib.sourceByRegex ./doom.d [ "config.el" "init.el" "packages.el" ];
-      dontUnpack = true;
-      installPhase = ''
-        cp $src/* .
-        install -D -t $out *.el
-      '';
-    };
+    doomPrivateDir = import ./savely-emacs-config.nix { inherit pkgs lib doomdir; };
     doomPackageDir =
     let
       filteredPath = builtins.path {

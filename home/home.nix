@@ -10,7 +10,6 @@ rec {
     ./programs/gpg
     ./programs/direnv
     ./programs/kitty
-    ./programs/emacs
     ./programs/shell
     ./programs/starship
     ./services/xidlehook

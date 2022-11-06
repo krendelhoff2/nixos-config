@@ -54,9 +54,13 @@
                useUserPackages = true;
                users.savely = nixpkgs.lib.mkMerge [
                  nix-doom-emacs.hmModule
+                 (import ./home/programs/emacs/doom-emacs.nix)
                  (import ./home/home.nix)
                ];
-               extraSpecialArgs = { inherit overlays; };
+               extraSpecialArgs = {
+                 inherit overlays;
+                 doomdir = ./home/programs/emacs/doom.d;
+               };
              };
            }
          ];
@@ -69,9 +73,13 @@
            ./vps/configuration.nix
            home-manager.nixosModules.home-manager {
              home-manager = {
-               extraSpecialArgs = { inherit overlays; };
+               extraSpecialArgs = {
+                 inherit overlays;
+                 doomdir = ./vps/doom.d;
+               };
                users.savely = nixpkgs.lib.mkMerge [
                  nix-doom-emacs.hmModule
+                 (import ./home/programs/emacs/doom-emacs.nix)
                  (import ./vps/home.nix)
                ];
              };
