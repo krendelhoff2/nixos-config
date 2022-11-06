@@ -35,6 +35,7 @@
         sha256 = "sha256-ozwoGllVItzNmPV0XmArxv3uJD/urYMp5gLEAAqYMVY=";
       };
     in ''
+      (load! "${../../../common-doom-config.el}")
       (load! "${ftheader}/list.el")
       (load! "${ftheader}/string.el")
       (load! "${ftheader}/comments.el")
