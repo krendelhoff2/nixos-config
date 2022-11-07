@@ -67,6 +67,7 @@ rec {
     jre # for minecraft
 
     cmake
+    valgrind
     clang
     clang-tools
     pkg-config

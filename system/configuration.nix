@@ -8,7 +8,7 @@ let
 in
 {
   imports = [
-    ./xmonad.nix
+    ./graphics.nix
     ./network.nix
     ./hardware-configuration.nix
   ];
@@ -121,6 +121,16 @@ in
   services.tor.enable = true;
 
   programs.steam.enable = true;
+
+  programs.dconf.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
+
+  programs.seahorse.enable = true;
+
+  programs.thunar.enable = true;
+
+  programs.gnome-disks.enable = true;
 
   services.openssh = {
     enable = true;

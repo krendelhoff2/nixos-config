@@ -1,15 +1,5 @@
 { config, lib, pkgs, ... }:
 {
-  programs.dconf.enable = true;
-
-  services.gnome.gnome-keyring.enable = true;
-
-  programs.seahorse.enable = true;
-
-  programs.thunar.enable = true;
-
-  programs.gnome-disks.enable = true;
-
   programs.gamemode.enable = true;
 
   xdg.portal = {

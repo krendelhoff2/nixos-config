@@ -1,8 +1,7 @@
 { config, pkgs, ... }: 
 let
   repos-dir = "/home/git"; #set up a directory to hold the git repos, this will also be the git users home directory
-  pubKey = builtins.readFile ../.secrets/pubkeys/pub;
-  serejaKey = builtins.readFile ../.secrets/pubkeys/sereja;
+  pubKeys = map builtins.readFile (pkgs.lib.filesystem.listFilesRecursive ../.secrets/pubkeys);
 in
 {
   services.cron.enable = true;
@@ -16,6 +15,6 @@ in
     createHome = true;
     home = "${repos-dir}";
     shell = "${pkgs.git}/bin/git-shell";
-    openssh.authorizedKeys.keys = [ pubKey serejaKey ];
+    openssh.authorizedKeys.keys = pubKeys;
   };
 }
