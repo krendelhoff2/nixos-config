@@ -1,4 +1,4 @@
-{ pkgs, lib, ...}:
+{ config, pkgs, lib, ...}:
 let
   commonInit = ''
     export PATH="$HOME/.cargo/bin:$HOME/.config/guix/current/bin:$PATH"
@@ -15,23 +15,35 @@ in
       "...." = "cd ../../..";
       ls = "exa";
       cat = "bat --style plain";
+      wg-stop = "sudo systemctl stop wg-quick-savely-wg.service";
+      wg-start = "sudo systemctl start wg-quick-savely-wg.service";
+      ssh = "kitty +kitten ssh";
+      vps = "kitty +kitten ssh savely-vps -t";
+      mopidy = config.systemd.user.services.mopidy.Service.ExecStart;
     };
-    interactiveShellInit = commonInit + ''
-      set fish_color_command a020f0
-      set -U fish_greeting ""
-      bass source "$GUIX_PROFILE/etc/profile"
-      function fish_user_key_bindings
+    functions = {
+      rebuild.body = ''
+        set target "$argv[1]"
+        test -z "$target"; and set target "savely-machine"
+        set path "$HOME/.dotfiles#$target"
+        if [ "$target" = "savely-machine" ]
+            sudo nixos-rebuild switch --flake "$path" $argv[2..-1]
+        else
+            deploy -s "$path" -- $argv[2..-1]
+        end
+      '';
+      fish_user_key_bindings.body = ''
         fish_default_key_bindings -M insert
         fish_vi_key_bindings --no-erase insert
         set fish_cursor_default block
         set fish_cursor_insert line
         set fish_cursor_replace_one underscore
-      end
-      function rebuild
-        set target $argv[1]
-        set -q target || set target savely-machine
-        deploy "$HOME/.dotfiles#$target"
-      end
+      '';
+    };
+    interactiveShellInit = commonInit + ''
+      set fish_color_command a020f0
+      set -U fish_greeting ""
+      bass source "$GUIX_PROFILE/etc/profile"
       colorscript -r
     '';
     plugins = [];
