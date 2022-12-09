@@ -1,8 +1,8 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-font (font-spec :family "PragmataPro Mono Liga" :size 23)
-      doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 24)
-      doom-unicode-font (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold :size 21)
+(setq doom-font (font-spec :family "PragmataPro Mono Liga" :size 26)
+      doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 25)
+      doom-unicode-font (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold :size 24)
       doom-big-font (font-spec :family "PragmataPro Mono Liga" :size 37))
 
 (setq dotfiles-dir (substitute-in-file-name "$HOME/.dotfiles/"))

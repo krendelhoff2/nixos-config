@@ -40,6 +40,13 @@
       (load! "${ftheader}/string.el")
       (load! "${ftheader}/comments.el")
       (load! "${ftheader}/header.el")
+
+      (setq write-file-hooks (cdr write-file-hooks))
+      (defun my-c-mode-before-save-hook ()
+        (when (eq major-mode 'c-mode)
+          (message "It's never too early to start saving (C code)!")
+          (header-update)))
+      (add-hook 'before-save-hook #'my-c-mode-before-save-hook)
     '';
     emacsPackagesOverlay = overlays.emacs-packages;
   };
