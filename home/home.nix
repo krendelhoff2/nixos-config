@@ -1,5 +1,5 @@
 { config, pkgs, ... }:
-with pkgs; with (import ./bindings.nix pkgs);
+with pkgs; with (import ./bindings.nix { inherit config pkgs; });
 rec {
   programs.home-manager.enable = true;
 
@@ -15,7 +15,7 @@ rec {
     ./services/xidlehook
     ./services/dunst
     ./services/picom
-    ./services/udiskie
+    ./services/music
     ./services/redshift
     ./services/gpg-agent
     ./services/sound-max
