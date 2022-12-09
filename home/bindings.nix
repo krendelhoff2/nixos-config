@@ -1,5 +1,5 @@
-pkgs: with pkgs;
-rec {
+{ config, pkgs, ... }:
+with pkgs; rec {
   layout-switch = writeShellScriptBin "layout-switch"
     (builtins.readFile ./scripts/layout-switch.sh);
 
@@ -39,6 +39,7 @@ rec {
     nitrogen
     eww
     layout-switch
+    pavucontrol
     toggle-sidebar
     launch-bar
     powermenu
@@ -53,8 +54,8 @@ rec {
   media = [
     vlc
     mpv
-    playerctl
     mpc-cli
+    playerctl
     ffmpeg-full
   ];
 
@@ -83,6 +84,8 @@ rec {
 
     sbcl
 
+    texlive.combined.scheme-full
+
     (python3.withPackages (ps: with ps; [
       jupyter
       python-lsp-server
@@ -110,6 +113,9 @@ rec {
     lshw
     ventoy-bin-full
     cool-retro-term
+    xautomation
+    xdotool
+    killall
     wget
     file
     steam-run # has nothing to do with steam
