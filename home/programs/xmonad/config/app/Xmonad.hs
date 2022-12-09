@@ -10,6 +10,7 @@ import qualified XMonad.StackSet                 as W
 
 import XMonad
 import Data.Monoid
+import Data.Foldable (traverse_)
 
 import XMonad.Actions.CycleWS          (nextScreen, prevScreen)
 
@@ -23,6 +24,7 @@ import XMonad.Util.EZConfig ( additionalKeysP )
 import XMonad.Util.Run                 (spawnPipe)
 import XMonad.Util.Themes ( darkTheme, ThemeInfo(theme) )
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.WindowSwallowing
 
 import XMonad.Layout.DecorationMadness ( shrinkText )
 import XMonad.Layout.ResizableTile
@@ -31,6 +33,7 @@ import XMonad.Layout.Tabbed
 
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
+import XMonad.Hooks.RefocusLast
 
 import XMonad.Actions.DynamicProjects  (Project (..), dynamicProjects,
                                         switchProjectPrompt)
@@ -40,20 +43,25 @@ import XMonad.Hooks.ManageHelpers ( doCenterFloat )
 import XMonad.Layout.Gaps ( gaps )
 import XMonad.Layout.Spacing ( spacingWithEdge )
 
-import XMonad.Config.Xfce ( xfceConfig )
 import XMonad.Util.SpawnOnce (spawnOnce)
+
+import XMonad.Config.Xfce (xfceConfig)
+import XMonad.Config.Kde (kde4Config)
 
 myModMask :: KeyMask
 myModMask = mod5Mask
 
+myTerminal1 :: String
+myTerminal1 = "cool-retro-term"
+
 myTerminal :: String
-myTerminal = "true"
+myTerminal = "kitty"
 
 appLauncher :: String
 appLauncher = "rofi -theme theme -modi drun,ssh,window -show drun -show-icons"
 
 screenshooter :: String
-screenshooter = "xfce4-screenshooter -r -c"
+screenshooter = "(pidof xfce4-clipman || xfce4-clipman) & xfce4-screenshooter -r -c"
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
@@ -73,6 +81,10 @@ myFocusedBorderColor = "#1681f2"
 myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
   [ ((modm .|. shiftMask, xK_o), spawn $ XMonad.terminal conf)
 
+  , ((modm , xK_y), spawn $ XMonad.terminal conf)
+
+  , ((modm .|. shiftMask , xK_y), spawn $ myTerminal1)
+
   , ((modm,               xK_p     ), spawn appLauncher)
 
   , ((modm .|. shiftMask, xK_c     ), kill)
@@ -83,7 +95,13 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
 
   , ((modm,               xK_n     ), refresh)
 
+  , ((modm,               xK_t     ), spawn "toggle-sidebar")
+
+  , ((modm .|. shiftMask,               xK_t     ), spawn "emacsclient -c -e '(telega)'")
+
   , ((controlMask, xK_backslash), spawn keyboardLayoutToggle)
+
+  --, ((controlMask, xK_apostrophe), spawn "setxkbmap us")
 
   , ((modm,               xK_c     ), spawn "/home/savely/.emacs.d/bin/org-capture")
 
@@ -117,19 +135,19 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
 
   , ((modm,               xK_l     ), sendMessage Expand)
 
-  , ((modm,               xK_t     ), withFocused $ windows . W.sink)
+  , ((modm .|. shiftMask,               xK_f     ), withFocused $ windows . W.sink)
 
   , ((modm              , xK_comma ), sendMessage (IncMasterN 1))
 
   , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
 
-  , ((modm              , xK_b     ), sendMessage ToggleStruts)
+  --, ((modm              , xK_b     ), sendMessage ToggleStruts)
 
   , ((modm .|. shiftMask, xK_q     ), io exitSuccess)
 
   , ((modm, xK_F1     ), spawn "amixer -q set Master toggle")
-  , ((modm, xK_F2     ), spawn "amixer -q set Master 5%-")
-  , ((modm, xK_F3     ), spawn "amixer -q set Master 5%+")
+  , ((modm, xK_F4     ), spawn "amixer -q set Master 5%-")
+  , ((modm, xK_F5     ), spawn "amixer -q set Master 5%+")
 
   , ((modm              , xK_q     ), spawn "xmonad --restart")
   , ((modm , xK_f)                              , passPrompt promptConfig)
@@ -157,6 +175,8 @@ myMouseBindings XConfig {XMonad.modMask = modm} = M.fromList
 
   , ((modm, button3), \w -> focus w >> mouseResizeWindow w
                                     >> windows W.shiftMaster)
+  , ((0, 9), \w -> spawn "xdotool key Page_Up")
+  , ((0, 8), \w -> spawn "xdotool key Page_Down")
   ]
 
 myWorkspaces :: [String]
@@ -186,6 +206,11 @@ myManageHook = composeAll
   [ className =? "pinentry"         --> doFloat
   , className =? "xmessage"         --> doFloat
   , className =? ".xscreensaver-demo-wrapped" --> doFloat
+  , className =? "Minecraft* 1.18.2" --> doShift "6"
+  , className =? "cpw-mods-bootstraplauncher-BootstrapLauncher" --> doFloat
+  , className =? "VirtualBox Machine" --> doFloat
+  , className =? "explorer.exe" --> doFloat
+  , className =? "desktop-launcher" --> doFloat
   , resource  =? "desktop_window"   --> doIgnore
   , resource  =? "kdesktop"         --> doIgnore
   , title     =? "Media viewer"     --> doCenterFloat
@@ -193,47 +218,42 @@ myManageHook = composeAll
   , manageDocks
   ]
 
-myEventHook :: Event -> X All
-myEventHook _ = return (All True)
+myHandleEventHook :: Event -> X All
+myHandleEventHook = swallowEventHook (className =? "kitty" <||> className =? "XTerm") (return True)
 
 myLogHook :: X ()
 myLogHook = return ()
 
 myStartupHook :: X ()
-myStartupHook = do
-  spawnOnce "setxkbmap us -variant colemak_dh -option ctrl:nocaps"
-  spawnOnce "unclutter -idle 1 &"
-  spawnOnce "eww daemon"
+myStartupHook = traverse_ (spawnOnce . (<> " &"))
+  [
+  ]
 
-main = do
-  xmonad $ withSB mySB
-         $ ewmhFullscreen
-         $ ewmh
-         $ dynamicProjects projects
-         $ docks
-         $ defaults
+main = xmonad $ withSB mySB
+              $ ewmh
+              $ ewmhFullscreen
+              $ dynamicProjects projects
+              $ docks
+              $ mkDefaults def
 
-defaults = xfceConfig
-  {  terminal           = myTerminal
-  ,  keys               = myKeys
-  ,  mouseBindings      = myMouseBindings
-  ,  focusFollowsMouse  = myFocusFollowsMouse
-  ,  clickJustFocuses   = myClickJustFocuses
-  ,  borderWidth        = myBorderWidth
-  ,  modMask            = myModMask
-  ,  workspaces         = myWorkspaces
-  ,  layoutHook         = myLayoutHook
-  ,  manageHook         = manageHook xfceConfig <+> myManageHook
-  ,  handleEventHook    = handleEventHook xfceConfig
-  ,  startupHook        = startupHook xfceConfig >> myStartupHook
-  ,  logHook            = logHook xfceConfig
-  } `additionalKeysP` [ ("<XF86AudioMute>", spawn "amixer -D pulse set Master toggle")
-                      , ("<XF86AudioLowerVolume>", spawn "amixer -D pulse set Master 5%-")
-                      , ("<XF86AudioRaiseVolume>", spawn "amixer -D pulse set Master 5%+")
-                      ]
+mkDefaults defaults = defaults
+  { terminal          = myTerminal
+  , keys              = myKeys
+  , mouseBindings     = myMouseBindings
+  , focusFollowsMouse = myFocusFollowsMouse
+  , clickJustFocuses  = myClickJustFocuses
+  , borderWidth       = myBorderWidth
+  , modMask           = myModMask
+  , workspaces        = myWorkspaces
+  , layoutHook        = myLayoutHook
+  , manageHook        = manageHook defaults <+> myManageHook
+  , handleEventHook   = myHandleEventHook <+> handleEventHook defaults
+  , startupHook       = startupHook defaults <+> myStartupHook
+  , logHook           = logHook defaults
+  }
 
 projects :: [Project]
 projects = []
 
 mySB :: StatusBarConfig
-mySB = statusBarProp "eww open bar" def
+mySB = statusBarProp "eww --config ~/.config/eww/arin daemon && launch-bar" def

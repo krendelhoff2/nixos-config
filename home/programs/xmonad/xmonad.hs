@@ -175,6 +175,8 @@ myMouseBindings XConfig {XMonad.modMask = modm} = M.fromList
 
   , ((modm, button3), \w -> focus w >> mouseResizeWindow w
                                     >> windows W.shiftMaster)
+  , ((0, 9), \w -> spawn "xdotool key Page_Up")
+  , ((0, 8), \w -> spawn "xdotool key Page_Down")
   ]
 
 myWorkspaces :: [String]
@@ -206,6 +208,7 @@ myManageHook = composeAll
   , className =? ".xscreensaver-demo-wrapped" --> doFloat
   , className =? "Minecraft* 1.18.2" --> doShift "6"
   , className =? "cpw-mods-bootstraplauncher-BootstrapLauncher" --> doFloat
+  , className =? "VirtualBox Machine" --> doFloat
   , className =? "explorer.exe" --> doFloat
   , className =? "desktop-launcher" --> doFloat
   , resource  =? "desktop_window"   --> doIgnore

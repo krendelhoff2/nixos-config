@@ -2,7 +2,7 @@
 {
   services.picom = {
     enable = true;
-#    experimentalBackends = true;
+    experimentalBackends = true;
     settings = {
       fading = true;
       fade-delta = 7;
@@ -33,7 +33,7 @@
         dropdown_menu = { opacity = 1.0; };
       };
 
-      backend = "xrender";
+      backend = "glx";
       unredir-if-possible = false;
       vsync = true;
     };

@@ -20,9 +20,13 @@
 
       libinput = {
         enable = true;
-        mouse.naturalScrolling = true;
-        mouse.accelSpeed = "maxSpeed";
-        mouse.accelProfile = "adaptive";
+        mouse = {
+          naturalScrolling = true;
+          accelSpeed = "maxSpeed";
+          accelProfile = "adaptive";
+          scrollButton = 2;
+          scrollMethod = "button";
+        };
       };
 
       autoRepeatDelay = 180;
