@@ -11,12 +11,12 @@ in
     ./graphics.nix
     ./network.nix
     ./hardware-configuration.nix
+    ../.secrets/sudo-rules.nix
   ];
 
   system.stateVersion = "22.11";
 
-  environment.systemPackages = with pkgs; [
-  ];
+  environment.systemPackages = with pkgs; [];
 
   programs.git.enable = true;
 
@@ -34,7 +34,7 @@ in
         "serokell-1:aIojg2Vxgv7MkzPJoftOO/I8HKX622sT+c0fjnZBLj0="
       ];
       substituters = [
-        "https://hydra.iohk.io"
+        "https://cache.iog.io"
         "s3://serokell-private-nix-cache?endpoint=s3.us-west-000.backblazeb2.com&profile=backblaze-nix-cache"
         "s3://serokell-private-cache?endpoint=s3.eu-central-1.wasabisys.com&profile=wasabi-nix-cache"
       ];
@@ -101,20 +101,10 @@ in
 
   virtualisation = {
     docker.enable = true;
-    virtualbox = {
-      guest = {
-        enable = true;
-        x11 = false;
-      };
-      host = {
-        enable = true;
-        enableExtensionPack = true;
-      };
+    virtualbox.host = {
+      enable = true;
+      enableExtensionPack = true;
     };
-    #vmware = {
-    #  guest.enable = true;
-    #  host.enable = true;
-    #};
     libvirtd.enable = true;
   };
 
