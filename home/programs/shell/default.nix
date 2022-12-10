@@ -17,6 +17,7 @@ in
       cat = "bat --style plain";
       wg-stop = "sudo systemctl stop wg-quick-savely-wg.service";
       wg-start = "sudo systemctl start wg-quick-savely-wg.service";
+      emacs-restart = "systemctl --user restart emacs.service";
       ssh = "kitty +kitten ssh";
       vps = "kitty +kitten ssh savely-vps -t";
       mopidy = config.systemd.user.services.mopidy.Service.ExecStart;
@@ -26,10 +27,18 @@ in
         set target "$argv[1]"
         test -z "$target"; and set target "savely-machine"
         set path "$HOME/.dotfiles#$target"
+        set i 1
+        for arg in $argv;
+          set i (math $i + 1)
+          if [ $arg = "--" ]
+             break
+          end
+        end
+        set args $argv[$i..-1]
         if [ "$target" = "savely-machine" ]
-            sudo nixos-rebuild switch --flake "$path" $argv[2..-1]
+            sudo nixos-rebuild switch --flake "$path" $args
         else
-            deploy -s "$path" -- $argv[2..-1]
+            deploy --remote-build "$path" -- $args
         end
       '';
       fish_user_key_bindings.body = ''
