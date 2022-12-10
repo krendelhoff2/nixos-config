@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nix-darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
     rust-overlay.url = "github:oxalica/rust-overlay";
     deploy-rs.url = "github:serokell/deploy-rs";
