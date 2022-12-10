@@ -2,7 +2,6 @@
 {
   services.picom = {
     enable = true;
-    experimentalBackends = true;
     settings = {
       fading = true;
       fade-delta = 7;
