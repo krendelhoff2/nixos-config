@@ -1,14 +1,5 @@
 { config, pkgs, ...}:
 {
-  networking.nat = { 
-    enable = true;
-    externalInterface = "eth0";
-    internalInterfaces = [ "savely-wg" ];
-  };
-  networking.firewall = {
-    allowedUDPPorts = [ 7717 ];
-  };
-
   networking.wg-quick.interfaces = {
     savely-wg = {
       address = [ "10.0.0.1/24" ];
