@@ -1,0 +1,7 @@
+keys:
+  - &savely-machine 1F1D7969F1305ECB8C8FF2F0C6420F128F9E77AF
+  - &savely-vps age1vhv6t6cpxyep7035cf6hdmxwzps8ld6ypswwqms4lltggmx203vsg60gf5
+creation_rules:
+  - path_regex: .secrets/[^/]+\.yaml$
+    age: *savely-vps
+    pgp: *savely-machine
