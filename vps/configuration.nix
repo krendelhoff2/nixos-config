@@ -14,7 +14,7 @@ in
   nix = {
     settings = {
       allowed-users = [ "*" ];
-      trusted-users = [ "root" "savely" ];
+      trusted-users = [ "root" ];
       experimental-features = [ "nix-command" "flakes" ];
     };
   };
@@ -82,5 +82,5 @@ in
     userlistEnable = true;
   };
 
-  system.stateVersion = "22.05";
+  system.stateVersion = "23.05";
 }
