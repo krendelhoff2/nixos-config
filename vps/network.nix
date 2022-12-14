@@ -9,6 +9,7 @@
   networking = {
     usePredictableInterfaceNames = false;
     hostName = "savely-vps";
+    domain = "krendelhoff.space";
     useDHCP = false;
     nameservers = [
       "ns1.linode.com"
@@ -29,7 +30,7 @@
     };
     nat = {
       enable = true;
-      internalInterfaces = [ "ve-+" "savely-wg" ];
+      internalInterfaces = [ "savely-wg" ];
       externalInterface = "eth0";
       enableIPv6 = true;
     };
