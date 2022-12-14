@@ -5,19 +5,21 @@ address: { config, lib, pkgs, ... }:
   networking = {
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 8200 8201 ];
+      allowedTCPPorts = [ 8200 ];
     };
   };
   services.postgresql = {
     enable = true;
-    initialScript = pkgs.writeText "vault-init.sql" ''
-      CREATE ROLE "vault" WITH LOGIN PASSWORD 'vault';
-      CREATE DATABASE "vault" WITH OWNER "vault"
-        TEMPLATE template0
-        LC_COLLATE = "C"
-        LC_CTYPE = "C";
+    # FIXME that SHOULD be reconsidered
+    authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      host all all 127.0.0.1/32 trust
+      host all all ::1/128 trust
     '';
+    initialScript = "/etc/vault/vault-init.sql";
   };
+
+  users.users.postgres.extraGroups = [ "keys" ];
 
   services.consul.enable = false; # do this later don't suka forget
 
@@ -25,17 +27,13 @@ address: { config, lib, pkgs, ... }:
     enable = true;
     package = pkgs.vault-bin;
     address = "${address}:8200";
-    storageBackend = "postgresql";
-    storageConfig = ''
-      connection_url = "postgres://vault:vault@127.0.0.1:5432/vault"
-      table = "vault_kv_store"
-    '';
     extraConfig = ''
       disable_mlock = true
       ui = true
       api_addr = "http://${address}:8200"
       cluster_addr = "https://${address}:8201"
     '';
+    extraSettingsPaths = [ "/etc/vault/vault.hcl" ];
   };
-  users.users.vault.extraGroups = ["keys"];
+  users.users.vault.extraGroups = [ "keys" ];
 }

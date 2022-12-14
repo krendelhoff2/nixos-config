@@ -5,6 +5,8 @@ in
 {
   system.stateVersion = "23.05";
 
+  users.groups.keys = {};
+
   networking = {
     hostName = "matrix";
     domain = "krendelhoff.space";
@@ -16,14 +18,16 @@ in
 
   services.postgresql = {
     enable = true;
-    initialScript = pkgs.writeText "synapse-init.sql" ''
-      CREATE ROLE "matrix-synapse" WITH LOGIN PASSWORD 'synapse';
-      CREATE DATABASE "matrix-synapse" WITH OWNER "matrix-synapse"
-        TEMPLATE template0
-        LC_COLLATE = "C"
-        LC_CTYPE = "C";
+    # FIXME that SHOULD be reconsidered
+    authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      host all all 127.0.0.1/32 trust
+      host all all ::1/128 trust
     '';
+    initialScript = "/etc/matrix/synapse-init.sql";
   };
+
+  users.users.postgres.extraGroups = [ config.users.groups.keys.name ];
 
   services.matrix-synapse = {
     enable = true;
@@ -41,29 +45,15 @@ in
           } ];
         }
       ];
-      public_baseurl = "https://" + fqdn;
-      max_upload_size = "50M";
-      database = {
-        name = "psycopg2";
-        args.database = "matrix-synapse";
-      };
       enable_registration = true;
       enable_registration_captcha = true;
+      public_baseurl = "https://" + fqdn;
+      max_upload_size = "50M";
     };
-    extraConfigFiles = [ "/etc/matrix/secret" "/etc/matrix/captcha" ];
+    extraConfigFiles = [ "/etc/matrix/secrets" ];
   };
 
-  #services.mjolnir = {
-  #  enable = true;
-  #  homeserverUrl = config.services.matrix-synapse.settings.public_baseurl;
-  #  pantalaimon = {
-  #     enable = true;
-  #     username = "mjolnir";
-  #     passwordFile = "/run/secrets/mjolnir-password";
-  #  };
-  #  protectedRooms = [
-  #    "https://matrix.to/#/!xxx:domain.tld"
-  #  ];
-  #  managementRoom = "!yyy:domain.tld";
-  #};
+  systemd.services.matrix-synapse = {
+    serviceConfig.SupplementaryGroups = [ config.users.groups.keys.name ];
+  };
 }
