@@ -9,6 +9,7 @@ in
     ./hardware-configuration.nix
     ./git-server.nix
     ./network.nix
+    ./sops.nix
   ];
 
   nix = {
