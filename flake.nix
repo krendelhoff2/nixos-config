@@ -2,13 +2,21 @@
   description = "Based flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
-    rust-overlay.url = "github:oxalica/rust-overlay";
-    deploy-rs.url = "github:serokell/deploy-rs";
-    eww.url = "github:elkowar/eww";
-    polymc.url = "github:PolyMC/PolyMC";
-    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
+    eww.url            = github:elkowar/eww;
+
+    polymc.url         = github:PolyMC/PolyMC;
+
+    nixpkgs.url        = github:nixos/nixpkgs/nixos-unstable;
+
+    sops-nix.url       = github:Mic92/sops-nix;
+
+    deploy-rs.url      = github:serokell/deploy-rs;
+
+    rust-overlay.url   = github:oxalica/rust-overlay;
+
+    home-manager.url   = github:nix-community/home-manager;
+
+    nix-doom-emacs.url = github:nix-community/nix-doom-emacs;
   };
 
   outputs = {
@@ -16,6 +24,7 @@
     self,
     polymc,
     nixpkgs,
+    sops-nix,
     deploy-rs,
     nix-darwin,
     rust-overlay,
@@ -70,6 +79,7 @@
          specialArgs = {};
          modules = [
            ./vps/configuration.nix
+           sops-nix.nixosModules.sops
            home-manager.nixosModules.home-manager {
              home-manager = {
                extraSpecialArgs = {
