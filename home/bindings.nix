@@ -60,8 +60,13 @@ with pkgs; rec {
   ];
 
   crypt = [
+    age
+    sops
+    pwgen
     git-crypt
     cryptsetup
+    ssh-to-pgp
+    ssh-to-age
   ];
 
   sharedProgrammingTools = [
