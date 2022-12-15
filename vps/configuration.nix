@@ -2,7 +2,7 @@
 let
   repos = import ./repos-packages.nix { inherit pkgs repos-dir; };
   repos-dir = "/home/git";
-  pubKey = builtins.readFile ../.secrets/pubkeys/pub;
+  pubKey = builtins.readFile ../.secrets/pubkeys/sum;
 in
 {
   imports = [
