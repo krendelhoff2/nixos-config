@@ -16,6 +16,7 @@ rec {
     ./services/dunst
     ./services/picom
     ./services/music
+    ./services/udiskie
     ./services/redshift
     ./services/gpg-agent
     ./services/sound-max
