@@ -67,6 +67,10 @@ with pkgs; rec {
     cryptsetup
     ssh-to-pgp
     ssh-to-age
+    yubikey-manager
+    yubioath-flutter
+    age-plugin-yubikey
+    yubikey-manager-qt
   ];
 
   sharedProgrammingTools = [
