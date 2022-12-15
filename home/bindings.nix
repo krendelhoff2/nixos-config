@@ -17,12 +17,13 @@ with pkgs; rec {
   ];
 
   nixTools = [
-    nix-prefetch-git
-    rnix-lsp
-    nixfmt
-    cabal2nix
     niv
+    nixfmt
+    rnix-lsp
+    cabal2nix
     deploy-rs
+    nixos-generate
+    nix-prefetch-git
   ];
 
   internet = [
@@ -159,6 +160,7 @@ with pkgs; rec {
     slack
     tdesktop
     discord
+    element-desktop
   ];
 
   games = [
