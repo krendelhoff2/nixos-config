@@ -12,4 +12,5 @@
       foreground = "#c5c8c6";
     };
   };
+  xdg.configFile."kitty/ssh.conf".source = ./ssh.conf;
 }
