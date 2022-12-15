@@ -2,21 +2,21 @@
   description = "Based flake";
 
   inputs = {
-    eww.url            = github:elkowar/eww;
-
-    polymc.url         = github:PolyMC/PolyMC;
-
-    nixpkgs.url        = github:nixos/nixpkgs/nixos-unstable;
-
-    sops-nix.url       = github:Mic92/sops-nix;
-
-    deploy-rs.url      = github:serokell/deploy-rs;
-
-    rust-overlay.url   = github:oxalica/rust-overlay;
-
-    home-manager.url   = github:nix-community/home-manager;
-
-    nix-doom-emacs.url = github:nix-community/nix-doom-emacs;
+    eww.url            = "github:elkowar/eww";
+    polymc.url         = "github:PolyMC/PolyMC";
+    nixpkgs.url        = "github:nixos/nixpkgs/nixos-unstable";
+    sops-nix           = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    deploy-rs.url      = "github:serokell/deploy-rs";
+    rust-overlay.url   = "github:oxalica/rust-overlay";
+    home-manager.url   = "github:nix-community/home-manager";
+    nixos-generators   = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
   };
 
   outputs = {
@@ -30,6 +30,7 @@
     rust-overlay,
     home-manager,
     nix-doom-emacs,
+    nixos-generators,
     ...
   }:
   let
@@ -42,6 +43,7 @@
         (_: _: {
           inherit (eww.packages.${system}) eww;
           inherit (deploy-rs.packages.${system}) deploy-rs;
+          nixos-generate = nixos-generators.packages.${system}.nixos-generate;
         })
       ];
       config.allowUnfree = true;
@@ -51,7 +53,7 @@
   in
   {
      nixosConfigurations = {
-       "savely-machine" = nixpkgs.lib.nixosSystem {
+       savely-machine = nixpkgs.lib.nixosSystem {
          inherit system pkgs;
          specialArgs = {};
          modules = [
@@ -74,7 +76,7 @@
          ];
        };
 
-       "savely-vps" = nixpkgs.lib.nixosSystem {
+       savely-vps = nixpkgs.lib.nixosSystem {
          inherit system pkgs;
          specialArgs = {};
          modules = [
