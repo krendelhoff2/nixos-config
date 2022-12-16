@@ -6,10 +6,11 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
-    ./git-server.nix
-    ./network.nix
     ./sops.nix
+    ./containers
+    ./network.nix
+    ./git-server.nix
+    ./hardware-configuration.nix
   ];
 
   nix = {
@@ -42,6 +43,8 @@ in
     openssh.authorizedKeys.keys = [ pubKey ];
   };
 
+  users.users.root.openssh.authorizedKeys.keys = [ pubKey ];  # TODO change this after debug
+
   environment.systemPackages = with pkgs; with repos; [
     vim
     wget
@@ -65,7 +68,7 @@ in
 
   services.openssh = {
     enable = true;
-    permitRootLogin = "no";
+    permitRootLogin = "yes"; # TODO change this after debug
   };
 
   services.vsftpd = {

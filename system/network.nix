@@ -23,7 +23,7 @@
     };
 
     firewall = {
-      allowedUDPPorts = [ 7717 ];
+      allowedUDPPorts = [ 7717 53222 ];
     };
 
     wg-quick.interfaces = {
@@ -49,6 +49,6 @@
       #    persistentKeepalive = 25;
       #  }];
       #};
-    };
+    };#
   };
 }
