@@ -17,6 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
+    nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
   };
 
   outputs = {
@@ -31,6 +32,7 @@
     home-manager,
     nix-doom-emacs,
     nixos-generators,
+    nixos-mailserver,
     ...
   }:
   let
@@ -81,6 +83,7 @@
          specialArgs = {};
          modules = [
            ./vps/configuration.nix
+           nixos-mailserver.nixosModules.mailserver
            sops-nix.nixosModules.sops
            home-manager.nixosModules.home-manager {
              home-manager = {
