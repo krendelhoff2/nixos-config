@@ -6,11 +6,14 @@
 
   services.yubikey-agent.enable = true;
 
+  environment.systemPackages = with pkgs; [ pinentry-qt ];
+
   programs.ssh.startAgent = false;
 
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
+    pinentryFlavor = "qt";
   };
 
   security.pam = {
