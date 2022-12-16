@@ -1,30 +1,24 @@
 { config, lib, pkgs, ... }:
+let
+  readOnly = { mode = "0440"; group = config.users.groups.keys.name; };
+  restart = unit: { restartUnits = [ unit ]; };
+in
 {
-  #deployment.keys.secrets.yaml.text = "shhh this is a secret"; think about it
   sops = {
-    defaultSopsFile = ../.secrets/secrets.yaml; # cause it gets into /nix/store
+    defaultSopsFile = ../.secrets/secrets.yaml;
     age = {
       # This will automatically import SSH keys as age keys
       sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
       # This is using an age key that is expected to already be in the filesystem
       keyFile = "/var/lib/sops-nix/key.txt";
       # This will generate a new key if the key specified above does not exist
-      generateKey = true;
+      generateKey = false;
     };
     # This is the actual specification of the secrets.
     secrets = {
-      "matrix/secrets" = {
-        mode = "0440";
-        group = config.users.groups.keys.name;
-        restartUnits = [ "container@matrix.service" ];
-      };
-      "matrix/synapse-init.sql" = { mode = "0440"; group = config.users.groups.keys.name; };
-      "vault/vault.hcl" = {
-        mode = "0440";
-        group = config.users.groups.keys.name;
-        restartUnits = [ "container@vault.service" ];
-      };
-      "vault/vault-init.sql" = { mode = "0440"; group = config.users.groups.keys.name; };
+      "matrix/secrets" = readOnly // restart "container@matrix.service";
+      "vault/vault.hcl" = readOnly // restart "container@vault.service";
+      "nextcloud/adminpass" = readOnly // restart "container@nextcloud.service";
     };
   };
   users.groups.keys = {};
